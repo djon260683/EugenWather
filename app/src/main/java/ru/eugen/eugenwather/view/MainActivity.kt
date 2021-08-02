@@ -1,8 +1,8 @@
-package ru.eugen.eugenwather
+package ru.eugen.eugenwather.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import ru.eugen.eugenwather.ui.main.MainFragment
+import ru.eugen.eugenwather.R
 
 class MainActivity : AppCompatActivity() {
 
