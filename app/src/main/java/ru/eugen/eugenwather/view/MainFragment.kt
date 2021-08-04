@@ -41,16 +41,7 @@ class MainFragment : Fragment() {
         viewModel.getLiveData().observe(viewLifecycleOwner, observer)
         viewModel.getWeather()
     }
-    private fun setData(weatherData: Weather) {
-        binding.cityName.text = weatherData.city.city
-        binding.cityCoordinates.text = String.format(
-            getString(R.string.city_coordinates),
-            weatherData.city.lat.toString(),
-            weatherData.city.lon.toString()
-        )
-        binding.temperatureValue.text = weatherData.temperature.toString()
-        binding.feelsLikeValue.text = weatherData.feelsLike.toString()
-    }
+
     private fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
@@ -70,5 +61,15 @@ class MainFragment : Fragment() {
                     .show()
             }
         }
+    }
+    private fun setData(weatherData: Weather) {
+        binding.cityName.text = weatherData.city.city
+        binding.cityCoordinates.text = String.format(
+            getString(R.string.city_coordinates),
+            weatherData.city.lat.toString(),
+            weatherData.city.lon.toString()
+        )
+        binding.temperatureValue.text = weatherData.temperature.toString()
+        binding.feelsLikeValue.text = weatherData.feelsLike.toString()
     }
 }
