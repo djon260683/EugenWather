@@ -1,11 +1,11 @@
 package ru.eugen.eugenwather.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.eugen.eugenwather.model.Repository
 import ru.eugen.eugenwather.model.RepositoryImpl
 import java.lang.Thread.sleep
+import java.util.*
 
 class MainViewModel(
     private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(),
@@ -19,7 +19,11 @@ class MainViewModel(
         Thread {
             liveDataToObserve.postValue(AppState.Loading)
             sleep(2000)
-            liveDataToObserve.postValue(AppState.Success(repositoryImpl.getWeatherFromLocalStorage()))
+            val i:Int = Random().nextInt(2)
+            when(i) {
+                0->{liveDataToObserve.postValue(AppState.Success(repositoryImpl.getWeatherFromLocalStorage()))}
+                1->{liveDataToObserve.postValue(AppState.Error)}
+            }
         }.start()
     }
 }
