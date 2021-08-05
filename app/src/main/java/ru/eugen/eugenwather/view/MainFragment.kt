@@ -33,11 +33,10 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.mainFragmentRecyclerView.adapter = adapter
-        binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.getLiveData().observe(viewLifecycleOwner, Observer {
-            renderData(it) })
+        viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         viewModel.getWeatherFromLocalSourceRus()
+        binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
     }
     private fun changeWeatherDataSet() {
         if (isDataSetRus) {
