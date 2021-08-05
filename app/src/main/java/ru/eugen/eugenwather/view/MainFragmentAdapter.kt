@@ -9,18 +9,16 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.eugen.eugenwather.R
 import ru.eugen.eugenwather.model.Weather
 
-class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.MainViewHolder>(){
+class MainFragmentAdapter (private var onItemViewClickListener:MainFragment.OnItemViewClickListener?):RecyclerView.Adapter<MainFragmentAdapter.MainViewHolder>(){
+
     private var weatherData: List<Weather> = listOf()
+
     fun setWeather(data: List<Weather>) {
         weatherData = data
         notifyDataSetChanged()
     }
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): MainViewHolder {
-        return MainViewHolder(
-            LayoutInflater.from(parent.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
+        return MainViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.fragment_main_recycler_item, parent, false) as View
         )
     }
@@ -32,14 +30,9 @@ class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.MainViewHol
     }
     inner class MainViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(weather: Weather) {
-            itemView.findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text =
-                weather.city.city
+            itemView.findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text =  weather.city.city
             itemView.setOnClickListener {
-                Toast.makeText(
-                    itemView.context,
-                    weather.city.city,
-                    Toast.LENGTH_LONG
-                ).show()
+                onItemViewClickListener?.onItemViewClick(weather)
             }
         }
     }

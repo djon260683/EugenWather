@@ -10,33 +10,47 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import ru.eugen.eugenwather.R
 import ru.eugen.eugenwather.databinding.FragmentMainBinding
+import ru.eugen.eugenwather.model.Weather
 import ru.eugen.eugenwather.viewmodel.AppState
 import ru.eugen.eugenwather.viewmodel.MainViewModel
 
 class MainFragment : Fragment() {
+
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var viewModel: MainViewModel
+    private val adapter = MainFragmentAdapter(object : OnItemViewClickListener {
+        override fun onItemViewClick(weather: Weather) {
+            val manager = activity?.supportFragmentManager
+            if (manager != null) {
+                val bundle = Bundle()
+                bundle.putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
+                manager.beginTransaction()
+                    .add(R.id.container, DetailsFragment.newInstance(bundle))
+                    .addToBackStack("")
+                    .commitAllowingStateLoss()
+            }
+        }
+    })
+    private var isDataSetRus: Boolean = true
+
     companion object {
         fun newInstance() =
             MainFragment()
     }
-    private var _binding: FragmentMainBinding? = null
-    private val binding get() = _binding!!
-    private lateinit var viewModel: MainViewModel
-    private val adapter = MainFragmentAdapter()
-    private var isDataSetRus: Boolean = true
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.getRoot()
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.mainFragmentRecyclerView.adapter = adapter
+        binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         viewModel.getWeatherFromLocalSourceRus()
-        binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
     }
     private fun changeWeatherDataSet() {
         if (isDataSetRus) {
@@ -67,5 +81,8 @@ class MainFragment : Fragment() {
                     .show()
             }
         }
+    }
+    interface OnItemViewClickListener {
+        fun onItemViewClick(weather: Weather)
     }
 }
