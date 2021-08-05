@@ -1,6 +1,6 @@
 package ru.eugen.eugenwather.viewmodel
 
-import androidx.lifecycle.MutableLiveData
+ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.eugen.eugenwather.model.Repository
 import ru.eugen.eugenwather.model.RepositoryImpl
@@ -13,17 +13,18 @@ class MainViewModel(
 ) : ViewModel() {
 
     fun getLiveData() = liveDataToObserve
-    fun getWeather() = getDataFromLocalSource()
-    fun getWeatherFromRemoteSource() = getDataFromLocalSource()
-    private fun getDataFromLocalSource() {
+    fun getWeatherFromLocalSourceRus() = getDataFromLocalSource(isRussian = true)
+    fun getWeatherFromLocalSourceWorld() = getDataFromLocalSource(isRussian = false)
+    fun getWeatherFromRemoteSource() = getDataFromLocalSource(isRussian = true)
+    private fun getDataFromLocalSource(isRussian: Boolean) {
+        liveDataToObserve.value = AppState.Loading
         Thread {
-            liveDataToObserve.postValue(AppState.Loading)
-            sleep(2000)
-            val i:Int = Random().nextInt(2)
-            when(i) {
-                0->{liveDataToObserve.postValue(AppState.Success(repositoryImpl.getWeatherFromLocalStorage()))}
-                1->{liveDataToObserve.postValue(AppState.Error)}
-            }
+            sleep(1000)
+            liveDataToObserve.postValue(AppState.Success(if (isRussian)
+                repositoryImpl.getWeatherFromLocalStorageRus() else
+                repositoryImpl.getWeatherFromLocalStorageWorld()))
         }.start()
     }
+
+
 }
